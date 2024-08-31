@@ -23,29 +23,33 @@ driver = webdriver.Chrome(service=service, options=options)
 #open the login page
 driver.get("https://shopee.com.my/user/purchase/")
 
-#select language
-language_dropdown = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.ID, "language-selector"))
-)
-language_dropdown.click()
-
-# wait for the page to load after language selection
-WebDriverWait(driver, 10).until(
-    EC.presence_of_element_located((By.NAME, "username"))
+#wait for the language button to be clickable
+language_button = WebDriverWait(driver, 60).until(
+        EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'English') and contains(@class, 'shopee-button-outline--primary-reverse')]"))
 )
 
-#select the desired language
-language_option = driver.find_element(By.XPATH, "//option[text()='English']")
-language_option.click()
+#click the language button
+language_button.click()
 
-# find the username and password fields and login button
-username_box = driver.find_element(By.NAME, "username")
+# wait for the username field to be be present after language selection
+WebDriverWait(driver, 60).until(
+    EC.presence_of_element_located((By.XPATH, "//input[@name='loginKey']"))
+    )
+
+# find and interact with the login fields and button
+username_box = driver.find_element(By.NAME, "loginKey")
 password_box = driver.find_element(By.NAME, "password")
-login_button = driver.find_element(By.NAME, "login")    
 
 # Enter credentials and submit
 username_box.send_keys(username)
 password_box.send_keys(password)
+
+#Wait for the login button to be enabled
+login_button = WebDriverWait(driver, 60).until(
+    EC.element_to_be_clickable((By.CSS_SELECTOR, "button.vvOL40.iesrPs.AsFRg8.qCI4rz.ZKayWA.AnY7KS"))
+
+)
+
 login_button.click()
 
 
